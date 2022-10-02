@@ -1,0 +1,15 @@
+@tailwind components;
+@tailwind base;
+@tailwind utilities;
+
+@font-face {
+  font-family: "manrope";
+  src: url(./assets/font/Manrope-VariableFont_wght.ttf);
+}
+
+body {
+  font-family: "manrope";
+}
+.font-manrope {
+  font-family: "manrope";
+}
