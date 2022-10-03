@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react'
-import { auth, facebookProvider, googleProvider } from '../firebase-config';
+import { auth, database, facebookProvider, googleProvider, usersRef } from '../firebase-config';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { addDoc, doc, getDoc } from 'firebase/firestore'
 import { connect } from 'react-redux';
 import { UPDATE_CREDENTIALS, VERIFY_PATTERNS, CLEAR_VERIFICATIONS, LOGIN } from '../redux/actions';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import image from '../assets/images/login.jpeg';
 import logo from '../assets/images/logo.png';
 import facebook from '../assets/images/facebook.png';
@@ -18,17 +19,18 @@ const mapStateToProps = (state) => {
     }
 }
 function Login({ isAuth, email, password, dispatch, emailError, passwordError }) {
+    const navigate = useNavigate()
+
     useEffect(() => {
         dispatch({ type: CLEAR_VERIFICATIONS })
     }, [])
-    if (isAuth === true) {
-        return <Navigate to='/' />
-    }
     const login = () => {
         if (email && password && emailError === '' && passwordError === '') {
             signInWithEmailAndPassword(auth, email, password)
                 .then((cred) => {
-                    dispatch({ type: LOGIN })
+                    dispatch({ type: LOGIN });
+                    console.log(cred.user)
+                    navigate('/');
                 })
                 .catch(error => {
                     console.log(error.message)
@@ -36,18 +38,49 @@ function Login({ isAuth, email, password, dispatch, emailError, passwordError })
         }
     }
 
-    const googleSignIn = () => {
-        signInWithPopup(auth, googleProvider).then((cred => {
-            console.log(cred.user)
-            dispatch({ type: LOGIN });
-        }))
+    const googleSignIn = async () => {
+        const cred = await signInWithPopup(auth, googleProvider);
+        const { displayName, email: userEmail, photoURL, phoneNumber, uid } = cred.user;
+        const docRef = doc(database, 'users', uid);
+        const snapShot = await getDoc(docRef);
+        if (snapShot.data() === undefined) {
+            await addDoc(usersRef, {
+                displayName,
+                userEmail,
+                photoURL,
+                phoneNumber,
+                uid,
+                linkedin: '',
+                github: '',
+                twitter: '',
+                portfolio: ''
+            });
+        }
+        dispatch({ type: LOGIN });
+        navigate('/')
     }
 
-    const facebookSignIn = () => {
-        signInWithPopup(auth, facebookProvider).then((cred => {
-            dispatch({ type: LOGIN })
-        }))
+    const facebookSignIn = async () => {
+        const cred = await signInWithPopup(auth, facebookProvider);
+        const { displayName, email: userEmail, photoURL, phoneNumber, uid } = cred.user;
 
+        const docRef = doc(database, 'users', uid);
+        const snapShot = await getDoc(docRef);
+        if (snapShot.data() === undefined) {
+            await addDoc(usersRef, {
+                displayName,
+                userEmail,
+                photoURL,
+                phoneNumber,
+                uid,
+                linkedin: '',
+                github: '',
+                twitter: '',
+                portfolio: ''
+            });
+        }
+        dispatch({ type: LOGIN });
+        navigate('/')
     }
     return <section className='bg-gray-100 min-h-screen w-full flex justify-center items-center'>
         <div className='flex w-[90vw] max-w-[900px] bg-white rounded-md overflow-hidden shadow-md'>
@@ -95,13 +128,13 @@ function Login({ isAuth, email, password, dispatch, emailError, passwordError })
 
 
                 <div className='flex flex-col gap-y-6'>
-                    <button className='w-full rounded-md py-3 px-3 bg-blue-700 hover:bg-blue-800 text-white text-[16px] flex justify-center items-center gap-x-6' onClick={()=>{
+                    <button className='w-full rounded-md py-3 px-3 bg-blue-700 hover:bg-blue-800 text-white text-[16px] flex justify-center items-center gap-x-6' onClick={() => {
                         facebookSignIn();
                     }}>
                         <img src={facebook} alt="" className='w-[32px] h-[32px]' />
                         <p>Sign in With Facebook</p>
                     </button>
-                    <button className='w-full rounded-md py-3 px-3 bg-white shadow-md hover:shadow-lg text-black text-[16px] flex justify-center items-center gap-x-6' onClick={()=>{
+                    <button className='w-full rounded-md py-3 px-3 bg-white shadow-md hover:shadow-lg text-black text-[16px] flex justify-center items-center gap-x-6' onClick={() => {
                         googleSignIn()
                     }}>
                         <img src={google} alt="" className='w-[32px] h-[32px]' />

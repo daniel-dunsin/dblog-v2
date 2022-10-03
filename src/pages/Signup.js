@@ -1,13 +1,18 @@
 import React, { useEffect } from 'react'
-import { auth, facebookProvider, googleProvider } from '../firebase-config';
+import { auth, database, facebookProvider, googleProvider, usersRef } from '../firebase-config';
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { addDoc, doc, getDoc } from 'firebase/firestore'
 import { connect } from 'react-redux';
 import { UPDATE_CREDENTIALS, VERIFY_PATTERNS, CLEAR_VERIFICATIONS, SIGNUP_WITH_EMAIL_AND_PASSWORD, LOGIN } from '../redux/actions';
 import { Link, useNavigate } from 'react-router-dom';
+
+// images
 import image from '../assets/images/login.jpeg';
 import logo from '../assets/images/logo.png';
 import facebook from '../assets/images/facebook.png';
 import google from '../assets/images/google.png';
+
+
 const mapStateToProps = (state) => {
   return {
     isAuth: state.auth.isAuth,
@@ -17,41 +22,82 @@ const mapStateToProps = (state) => {
     passwordError: state.auth.errors.password
   }
 }
+
+
 function Signup({ isAuth, email, password, dispatch, emailError, passwordError }) {
   const navigate = useNavigate();
   useEffect(() => {
     dispatch({ type: CLEAR_VERIFICATIONS })
   }, []);
 
-  useEffect(() => {
-    if (isAuth === true) {
-      navigate('/')
-    }
-  })
 
-  const signUp = () => {
+  const signUp = async () => {
     if (email && password && emailError === '' && passwordError === '') {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((cred) => {
-          dispatch({ type: SIGNUP_WITH_EMAIL_AND_PASSWORD })
-        })
-        .catch(error => {
-          console.log(error);
-        })
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password)
+
+        dispatch({ type: SIGNUP_WITH_EMAIL_AND_PASSWORD });
+        // add user to firestore
+        // {name, email, image, phone_number, linkedin, githu, facebook, twiiter, id}
+        console.log(cred.user);
+        const { displayName, email: userEmail, photoURL, phoneNumber, uid } = cred.user;
+
+        await addDoc(usersRef, {
+          displayName,
+          userEmail,
+          photoURL,
+          phoneNumber,
+          uid,
+          linkedin: '',
+          github: '',
+          twitter: '',
+          portfolio: ''
+        });
+        navigate('/');
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
-  const googleSignIn = () => {
-    signInWithPopup(auth, googleProvider).then((cred => {
-      console.log(cred.user)
-      dispatch({ type: LOGIN });
-    }))
+  const googleSignIn = async () => {
+    const cred = await signInWithPopup(auth, googleProvider);
+    const { displayName, email: userEmail, photoURL, phoneNumber, uid } = cred.user;
+    const docRef = doc(database, 'users', uid);
+    const snapShot = await getDoc(docRef);
+    if (snapShot.data() === undefined) {
+      await addDoc(usersRef, {
+        displayName,
+        userEmail,
+        photoURL,
+        phoneNumber,
+        uid,
+        linkedin: '',
+        github: '',
+        twitter: '',
+        portfolio: ''
+      });
+    }
+    dispatch({ type: LOGIN });
+    navigate('/')
   }
 
-  const facebookSignIn = () => {
-    signInWithPopup(auth, facebookProvider).then((cred => {
-      dispatch({ type: LOGIN })
-    }))
+  const facebookSignIn = async () => {
+    const cred = await signInWithPopup(auth, facebookProvider);
+    const { displayName, email: userEmail, photoURL, phoneNumber, uid } = cred.user;
 
+    const docRef = doc(database, 'users', uid);
+    const snapShot = await getDoc(docRef);
+    if (snapShot.data() === undefined) {
+      await addDoc(usersRef, {
+        displayName,
+        userEmail,
+        photoURL,
+        phoneNumber,
+        uid
+      });
+    }
+    dispatch({ type: LOGIN });
+    navigate('/')
   }
 
   return <section className='bg-gray-100 min-h-screen w-full flex justify-center items-center'>

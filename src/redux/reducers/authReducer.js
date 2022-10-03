@@ -5,9 +5,7 @@ import {
     LOGIN,
     SIGNUP_WITH_EMAIL_AND_PASSWORD,
     CHECK_LOCALSTORAGE_AUTH
-} from '../actions'
-import { googleProvider, facebookProvider, auth, database } from '../../firebase-config';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+} from '../actions';
 
 
 const authPatterns = {
