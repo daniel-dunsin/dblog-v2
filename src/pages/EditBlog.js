@@ -1,9 +1,10 @@
 import React from 'react'
-
+import { Navbar, Footer } from '../components'
 function EditBlog() {
-  return (
-    <div>EditBlog</div>
-  )
+  return <>
+    <Navbar />
+    <Footer />
+  </>
 }
 
 export default EditBlog

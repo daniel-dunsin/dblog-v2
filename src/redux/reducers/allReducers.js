@@ -5,9 +5,9 @@ import { combineReducers } from 'redux';
 
 
 const allReducers = combineReducers({
-    blogReducer,
-    authReducer,
-    userReducer
+    blog: blogReducer,
+    auth: authReducer,
+    user: userReducer
 });
 
 export default allReducers;

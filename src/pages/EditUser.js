@@ -1,9 +1,10 @@
 import React from 'react'
-
+import { Navbar, Footer } from '../components'
 function EditUser() {
-  return (
-    <div>EditUser</div>
-  )
+  return <>
+    <Navbar />
+    <Footer />
+  </>
 }
 
 export default EditUser

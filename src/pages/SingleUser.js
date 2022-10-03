@@ -1,9 +1,10 @@
 import React from 'react'
-
+import { Navbar, Footer } from '../components'
 function SingleUser() {
-  return (
-    <div>SingleUser</div>
-  )
+  return <>
+    <Navbar />
+    <Footer />
+  </>
 }
 
 export default SingleUser

@@ -9,12 +9,10 @@ import {
     SingleBlog,
     SingleUser
 } from './pages';
-import { Navbar, Footer, Sidebar, ProtectedRoute } from './components'
+import { Navbar, Footer, ProtectedRoute } from './components'
 
 function App() {
     return <Router>
-        <Navbar />
-        <Sidebar />
         <Routes>
             <Route path='/' element={<Home />} />
 
@@ -44,7 +42,6 @@ function App() {
                 </ProtectedRoute>
             } />
         </Routes>
-        <Footer />
     </Router>
 }
 
