@@ -1,9 +1,20 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { Navigate } from 'react-router-dom'
 
-const ProtectedRoute = ({children}) => {
+const mapStateToProps = state => {
+  return {
+    isAuth : state.auth.isAuth
+  }
+}
+
+const ProtectedRoute = ({isAuth, children}) => {
+  if(!isAuth){
+    return <Navigate to='/' />
+  }
   return (
-    {children}
+    children
   )
 }
 
-export default ProtectedRoute
+export default connect(mapStateToProps)(ProtectedRoute)

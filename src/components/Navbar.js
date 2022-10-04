@@ -2,8 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux';
 import { FaPlus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import {auth} from '../firebase-config';
 import logo from '../assets/images/logo.png';
-import user from '../assets/images/user1.jpg';
+import noDp from '../assets/images/no dp.jpg';
 const mapStateToProps = state => { return { isAuth: state.auth.isAuth } }
 
 function Navbar({ isAuth }) {
@@ -26,7 +27,9 @@ function Navbar({ isAuth }) {
               </button>
             </Link>
 
-            <img src={user} className='w-[50px] h-[50px] rounded-full cursor-pointer border-2 transition hover:border-blue-700' alt="" />
+            <img src={
+              auth.currentUser?.photoURL ? auth.currentUser?.photoURL : noDp
+            } className='w-[50px] h-[50px] rounded-full cursor-pointer border-2 transition hover:border-blue-700' alt="" />
           </div>
           : <div className='flex items-center justify-center gap-x-3'>
             <Link to='/login'>

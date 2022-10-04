@@ -38,7 +38,6 @@ function Signup({ isAuth, email, password, dispatch, emailError, passwordError }
 
         dispatch({ type: SIGNUP_WITH_EMAIL_AND_PASSWORD });
         // add user to firestore
-        // {name, email, image, phone_number, linkedin, githu, facebook, twiiter, id}
         console.log(cred.user);
         const { displayName, email: userEmail, photoURL, phoneNumber, uid } = cred.user;
 
