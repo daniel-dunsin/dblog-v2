@@ -8,6 +8,7 @@ import noDp from '../assets/images/no dp.jpg';
 const mapStateToProps = state => { return { isAuth: state.auth.isAuth } }
 
 function Navbar({ isAuth }) {
+  
   return <nav className='w-full shadow-md'>
     <div className='max-w-[1200px] mx-auto p-6 flex justify-between items-center'>
       <div className='flex-[0.6]'>

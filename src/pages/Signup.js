@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { auth, database, facebookProvider, googleProvider, usersRef } from '../firebase-config';
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { addDoc, doc, getDoc } from 'firebase/firestore'
+import { addDoc, doc, getDocs } from 'firebase/firestore'
 import { connect } from 'react-redux';
 import { UPDATE_CREDENTIALS, VERIFY_PATTERNS, CLEAR_VERIFICATIONS, SIGNUP_WITH_EMAIL_AND_PASSWORD, LOGIN } from '../redux/actions';
 import { Link, useNavigate } from 'react-router-dom';
@@ -61,9 +61,12 @@ function Signup({ isAuth, email, password, dispatch, emailError, passwordError }
   const googleSignIn = async () => {
     const cred = await signInWithPopup(auth, googleProvider);
     const { displayName, email: userEmail, photoURL, phoneNumber, uid } = cred.user;
-    const docRef = doc(database, 'users', uid);
-    const snapShot = await getDoc(docRef);
-    if (snapShot.data() === undefined) {
+    const snapShot = await getDocs(usersRef);
+
+    const user = snapShot.docs.find(doc => {
+      return doc.data().uid === uid;
+    })
+    if (!user) {
       await addDoc(usersRef, {
         displayName,
         userEmail,
@@ -83,16 +86,21 @@ function Signup({ isAuth, email, password, dispatch, emailError, passwordError }
   const facebookSignIn = async () => {
     const cred = await signInWithPopup(auth, facebookProvider);
     const { displayName, email: userEmail, photoURL, phoneNumber, uid } = cred.user;
-
-    const docRef = doc(database, 'users', uid);
-    const snapShot = await getDoc(docRef);
-    if (snapShot.data() === undefined) {
+    const snapShot = await getDocs(usersRef);
+    const user = snapShot.docs.find(doc => {
+      return doc.data().uid === uid;
+    })
+    if (!user) {
       await addDoc(usersRef, {
         displayName,
         userEmail,
         photoURL,
         phoneNumber,
-        uid
+        uid,
+        linkedin: '',
+        github: '',
+        twitter: '',
+        portfolio: ''
       });
     }
     dispatch({ type: LOGIN });
