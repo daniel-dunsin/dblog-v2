@@ -2,24 +2,36 @@ import React from 'react'
 import { connect } from 'react-redux';
 import { FaPlus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import {auth} from '../firebase-config';
+import { auth, usersRef } from '../firebase-config';
 import logo from '../assets/images/logo.png';
 import noDp from '../assets/images/no dp.jpg';
-const mapStateToProps = state => { return { isAuth: state.auth.isAuth } }
+import { useEffect } from 'react';
+import { SET_AUTH_USER } from '../redux/actions';
+import { getDocs } from 'firebase/firestore';
+const mapStateToProps = state => { return { isAuth: state.auth.isAuth, user: state.user.authUser } }
 
-function Navbar({ isAuth }) {
-  
+function Navbar({ isAuth, user, dispatch }) {
+  const getUser = async () => {
+    const snapshot = await getDocs(usersRef);
+    let user = snapshot.docs.find(doc => doc.data().uid === JSON.parse(localStorage.getItem("dblogAuth")).uid);
+    dispatch({ type: SET_AUTH_USER, payload: { user: user.data() } });
+  }
+
+  useEffect(() => {
+    getUser();
+  }, [])
+
   return <nav className='w-full shadow-md'>
     <div className='max-w-[1200px] mx-auto p-6 flex justify-between items-center'>
-      <div className='flex-[0.6]'>
+      <Link to='/' className='flex-[0.6]'>
         <img src={logo} alt="logo" className='w-[150px]' />
-      </div>
+      </Link>
       <div className='flex-1 flex justify-end items-center lg:gap-x-7 md:gap-x-4'>
         <input type="text" className='border-2 rounded-md md:block hidden py-2 px-4 outline-none focus:border-blue-700' placeholder='Search Blogs' />
         {isAuth
           ? <div className='flex justify-center items-center gap-x-3'>
             <Link to='/blog/create'>
-              <button className='items-center gap-x-2 bg-blue-700 text-white py-2 px-3 rounded-md md:flex hidden'>Add Post <i><FaPlus /></i></button>
+              <button className='items-center gap-x-2 bg-blue-700 hover:bg-blue-800 text-white py-2 px-3 rounded-md md:flex hidden'>Add Post <i><FaPlus /></i></button>
             </Link>
 
             <Link to='/blog/create'>
@@ -27,10 +39,12 @@ function Navbar({ isAuth }) {
                 <FaPlus />
               </button>
             </Link>
+            <Link to={`/user/${user.uid}`}>
+              <img src={
+                user.photoURL ? user.photoURL : noDp
+              } className='w-[50px] h-[50px] rounded-full cursor-pointer border-2 transition hover:border-blue-700' alt="" />
+            </Link>
 
-            <img src={
-              auth.currentUser?.photoURL ? auth.currentUser?.photoURL : noDp
-            } className='w-[50px] h-[50px] rounded-full cursor-pointer border-2 transition hover:border-blue-700' alt="" />
           </div>
           : <div className='flex items-center justify-center gap-x-3'>
             <Link to='/login'>

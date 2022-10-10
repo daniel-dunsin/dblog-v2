@@ -1,4 +1,4 @@
-import { ADD_POST, CLEAR_BLOG_DETAILS, UPDATE_BLOG_CREDENTIALS, UPLOAD_IMAGE } from "../actions";
+import { CLEAR_BLOG_DETAILS, UPDATE_BLOG_CREDENTIALS, UPLOAD_IMAGE, GET_ALL_BLOGS, SET_USERS_BLOGS } from "../actions";
 const initialState = {
     uploads: {
         title: '',
@@ -6,7 +6,9 @@ const initialState = {
         body: '',
         tagsText: '',
         convertedTagsList: [],
-    }
+    },
+    allBlogs: [],
+    userBlogs: []
 };
 
 const reducer = (state = initialState, action) => {
@@ -21,7 +23,6 @@ const reducer = (state = initialState, action) => {
             let convertedTags = action.payload.variable.split(',');
             // trim it to remove white spaces;
             convertedTags = convertedTags.map(tag => tag.trim());
-            console.log(convertedTags);
             return { ...state, uploads: { ...state.uploads, convertedTagsList: convertedTags, tagsText: action.payload.variable } }
         }
     }
@@ -38,6 +39,12 @@ const reducer = (state = initialState, action) => {
     }
     if (action.type === UPLOAD_IMAGE) {
         return { ...state, uploads: { ...state.uploads, image: action.payload.imageURL } }
+    }
+    if (action.type === GET_ALL_BLOGS) {
+        return { ...state, allBlogs: action.payload.blogs }
+    }
+    if(action.type === SET_USERS_BLOGS){
+        return {...state, userBlogs: action.payload.blogs}
     }
     return state;
 };

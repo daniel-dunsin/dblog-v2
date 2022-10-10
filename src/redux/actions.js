@@ -9,6 +9,11 @@ export const CHECK_LOCALSTORAGE_AUTH = 'CHECK_LOCALSTORAGE_AUTH';
 
 // ==========BLOG==============
 export const CLEAR_BLOG_DETAILS = 'CLEAR_BLOG_DETAILS';
-export const ADD_POST = 'ADD_POST';
 export const UPDATE_BLOG_CREDENTIALS = 'UPDATE_BLOG_CREDENTIALS';
 export const UPLOAD_IMAGE = 'UPLOAD_IMAGE';
+export const GET_ALL_BLOGS = 'GET_ALL_BLOGS';
+export const SET_USERS_BLOGS = 'SET_USERS_BLOGS';
+
+// ===============USER=========
+export const SET_USER = 'SET_USER';
+export const SET_AUTH_USER = 'SET_AUTH_USER';

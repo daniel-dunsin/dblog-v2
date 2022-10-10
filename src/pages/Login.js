@@ -23,13 +23,12 @@ function Login({ isAuth, email, password, dispatch, emailError, passwordError })
 
     useEffect(() => {
         dispatch({ type: CLEAR_VERIFICATIONS })
-    }, [])
+    }, [dispatch])
     const login = () => {
         if (email && password && emailError === '' && passwordError === '') {
             signInWithEmailAndPassword(auth, email, password)
                 .then((cred) => {
-                    dispatch({ type: LOGIN });
-                    console.log(cred.user)
+                    dispatch({ type: LOGIN, payload: { user: cred.user } });
                     navigate('/');
                 })
                 .catch(error => {
@@ -58,7 +57,7 @@ function Login({ isAuth, email, password, dispatch, emailError, passwordError })
                 portfolio: ''
             });
         }
-        dispatch({ type: LOGIN });
+        dispatch({ type: LOGIN, payload: { user: cred.user } });
         navigate('/')
     }
 
@@ -82,7 +81,7 @@ function Login({ isAuth, email, password, dispatch, emailError, passwordError })
                 portfolio: ''
             });
         }
-        dispatch({ type: LOGIN });
+        dispatch({ type: LOGIN, payload: { user: cred.user } });
         navigate('/')
     }
     return <section className='bg-gray-100 min-h-screen w-full flex justify-center items-center'>

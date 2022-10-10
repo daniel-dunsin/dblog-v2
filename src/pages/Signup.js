@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
-import { auth, database, facebookProvider, googleProvider, usersRef } from '../firebase-config';
+import { auth, facebookProvider, googleProvider, usersRef } from '../firebase-config';
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { addDoc, doc, getDocs } from 'firebase/firestore'
+import { addDoc, getDocs } from 'firebase/firestore'
 import { connect } from 'react-redux';
-import { UPDATE_CREDENTIALS, VERIFY_PATTERNS, CLEAR_VERIFICATIONS, SIGNUP_WITH_EMAIL_AND_PASSWORD, LOGIN } from '../redux/actions';
+import { UPDATE_CREDENTIALS, VERIFY_PATTERNS, CLEAR_VERIFICATIONS, SIGNUP_WITH_EMAIL_AND_PASSWORD, LOGIN, SET_AUTH_USER } from '../redux/actions';
 import { Link, useNavigate } from 'react-router-dom';
 
 // images
-import image from '../assets/images/login.jpeg';
+import image from '../assets/images/signup.jpg';
 import logo from '../assets/images/logo.png';
 import facebook from '../assets/images/facebook.png';
 import google from '../assets/images/google.png';
@@ -28,17 +28,16 @@ function Signup({ isAuth, email, password, dispatch, emailError, passwordError }
   const navigate = useNavigate();
   useEffect(() => {
     dispatch({ type: CLEAR_VERIFICATIONS })
-  }, []);
+  }, [dispatch]);
 
 
   const signUp = async () => {
     if (email && password && emailError === '' && passwordError === '') {
       try {
-        const cred = await createUserWithEmailAndPassword(auth, email, password)
-
-        dispatch({ type: SIGNUP_WITH_EMAIL_AND_PASSWORD });
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        dispatch({ type: SIGNUP_WITH_EMAIL_AND_PASSWORD, payload: { user: cred.user } });
+        dispatch({ type: SET_AUTH_USER, payload: { user: cred.user } })
         // add user to firestore
-        console.log(cred.user);
         const { displayName, email: userEmail, photoURL, phoneNumber, uid } = cred.user;
 
         await addDoc(usersRef, {
@@ -79,7 +78,7 @@ function Signup({ isAuth, email, password, dispatch, emailError, passwordError }
         portfolio: ''
       });
     }
-    dispatch({ type: LOGIN });
+    dispatch({ type: LOGIN, payload: { user: cred.user } });
     navigate('/')
   }
 
@@ -103,7 +102,7 @@ function Signup({ isAuth, email, password, dispatch, emailError, passwordError }
         portfolio: ''
       });
     }
-    dispatch({ type: LOGIN });
+    dispatch({ type: LOGIN, payload: { user: cred.user } });
     navigate('/')
   }
 

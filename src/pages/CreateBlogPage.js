@@ -11,7 +11,6 @@ import { FaPlus, FaPlusCircle } from 'react-icons/fa';
 
 // comments, title, img, tags, body, likes
 
-console.log(auth.currentUser);
 
 const mapStateToProps = state => {
   const { title, image, body, tagsText, convertedTagsList } = state.blog.uploads;
@@ -31,12 +30,11 @@ function CreateBlogPage({ title, image, body, tagsText, convertedTagsList, dispa
         body,
         tags: convertedTagsList,
         image,
-        likes: [],
-        comments: [],
         user: {
           uid: auth.currentUser.uid,
           username: auth.currentUser.displayName,
           email: auth.currentUser.email,
+          image: auth.currentUser.photoURL
         }
       });
       navigate('/')
@@ -53,7 +51,6 @@ function CreateBlogPage({ title, image, body, tagsText, convertedTagsList, dispa
         const imageRef = ref(storage, `${uploadedImage.name + v4()}`);
         const storedImage = await uploadBytes(imageRef, uploadedImage);
         const imageURL = await getDownloadURL(imageRef);
-        console.log(imageURL);
         dispatch({ type: UPLOAD_IMAGE, payload: { imageURL } })
       }
     }
@@ -113,7 +110,7 @@ function CreateBlogPage({ title, image, body, tagsText, convertedTagsList, dispa
                         <img src={image} alt="" className='w-full max-h-[450px] object-center object-cover' />
                         <div>
                           <input type="file" accept='image/jpeg, image/png' id='fileInput' className='hidden' onChange={handleImageUpload} />
-                          <label htmlFor="fileInput" className='text-center flex justify-center items-center gap-x-2'>
+                          <label htmlFor="fileInput" className='text-center flex justify-center items-center gap-x-2 mb-2'>
                             <i><FaPlusCircle /></i>
                             <p>Change Image</p>
                           </label>
