@@ -36,7 +36,7 @@ function App() {
 
             <Route path='/user/:id' element={<SingleUser />} />
 
-            <Route path='/user/edit' element={
+            <Route path='/user/edit/:id' element={
                 <ProtectedRoute>
                     <EditUser />
                 </ProtectedRoute>
