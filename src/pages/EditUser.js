@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { FaCheckCircle, FaPlus, FaSpinner } from 'react-icons/fa';
 import { useState } from 'react';
 import { auth, database, postsRef, storage, usersRef } from '../firebase-config';
@@ -18,8 +19,11 @@ const mapStateToProps = state => {
 }
 
 function EditUser({ authUser, editUser, dispatch }) {
-  const [displayImage, setDisplayImage] = useState(editUser.photoURL);
+  const [displayImage, setDisplayImage] = useState(editUser.photoURL ? editUser.photoURL : authUser.photoURL);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+
   const uploadImage = async (e) => {
     setLoading(true);
     const imageUploaded = e.target.files[0];
@@ -55,15 +59,18 @@ function EditUser({ authUser, editUser, dispatch }) {
       const blogsSnapshot = await getDocs(postsRef);
       const blogs = blogsSnapshot.docs.filter(blog => blog.data().user.uid === user.data().uid);
       blogs.forEach(async (blog) => {
-        console.log(blog.data());
         const postRef = doc(database, 'posts', blog.id);
         await updateDoc(postRef, {
-          username: editUser.displayName,
-          email: editUser.email,
-          image: editUser.photoURL
+          user: {
+            uid: authUser.uid,
+            username: editUser.displayName,
+            email: editUser.userEmail,
+            image: editUser.photoURL
+          }
         })
       });
       setLoading(false);
+      navigate('/');
     }
     catch (error) {
       console.log(error);
@@ -71,7 +78,7 @@ function EditUser({ authUser, editUser, dispatch }) {
   }
 
   useEffect(() => {
-    dispatch({ type: SET_EDIT_USER })
+    dispatch({ type: SET_EDIT_USER });
   }, [])
 
   return <>

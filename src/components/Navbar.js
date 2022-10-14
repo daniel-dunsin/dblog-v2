@@ -16,7 +16,7 @@ function Navbar({ isAuth, user, dispatch }) {
 
   const [navbarOpen, setNavbarOpen] = useState(false);
 
-  const getUser = useCallback(async () => {
+  const getUser = async () => {
     if (!localStorage.getItem("dblogAuth")) return;
     try {
       const snapshot = await getDocs(usersRef);
@@ -26,11 +26,11 @@ function Navbar({ isAuth, user, dispatch }) {
     catch (error) {
       console.log(error);
     }
-  })
+  }
 
   useEffect(() => {
     getUser();
-  }, [getUser])
+  }, [])
 
   return <nav className='w-full shadow-md'>
     <div className='max-w-[1200px] mx-auto p-6 flex justify-between items-center'>
