@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { CHECK_LOCALSTORAGE_AUTH, GET_ALL_BLOGS } from '../redux/actions';
 import { getDocs } from 'firebase/firestore';
 import { Navbar, Footer, Blog } from '../components'
 import { connect } from 'react-redux';
 import logo from '../assets/images/logo.png'
 import { postsRef } from '../firebase-config';
+import { FaSpinner } from 'react-icons/fa';
 
 const mapStateToProps = state => {
   return {
@@ -13,16 +14,26 @@ const mapStateToProps = state => {
   }
 }
 
-function Home({ dispatch, blogs }) {
+function Home({ dispatch, blogs = [], isAuth }) {
+
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(false);
 
   const getBlogs = async () => {
     try {
+      setLoading(true);
       const snapshot = await getDocs(postsRef);
       const blogs = snapshot.docs.map(doc => {
         return { ...doc.data(), id: doc.id };
       });
-      return blogs;
+      setLoading(false);
+      setError(false);
+      dispatch({
+        type: GET_ALL_BLOGS, payload: { blogs }
+      });
     } catch (error) {
+      setLoading(false);
+      setError(true);
       console.log(error);
     }
   }
@@ -30,14 +41,28 @@ function Home({ dispatch, blogs }) {
 
   useEffect(() => {
     dispatch({ type: CHECK_LOCALSTORAGE_AUTH });
-    getBlogs().then(blogs => {
-      dispatch({
-        type: GET_ALL_BLOGS, payload: {
-          blogs
-        }
-      });
-    });
+    getBlogs()
   }, [dispatch]);
+
+  if (loading) {
+    return <>
+      <section className='bg-gray-100 min-h-[600px] py-9 px-6 flex justify-center items-center'>
+        <i className='text-[30px] text-blue-700 animate-spin'><FaSpinner /></i>
+      </section>
+      <Footer />
+    </>
+
+  }
+
+  if (error) {
+    return <>
+      <section className='bg-gray-100 min-h-[600px] py-9 px-6 flex justify-center items-center'>
+        <h1 className='text-[40px]'>Unable to fetch blogs</h1>
+      </section>
+      <Footer />
+    </>
+  }
+
   return <>
     <Navbar />
     <section className='bg-gray-100 min-h-screen py-9 px-6'>

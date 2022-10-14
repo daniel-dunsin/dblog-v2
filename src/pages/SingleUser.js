@@ -40,28 +40,41 @@ function SingleUser({ dispatch, user, authUser, userBlogs }) {
 
 
   const getUser = useCallback(async () => {
-    const snapshot = await getDocs(usersRef);
-    const user = snapshot.docs.find(user => user.data().uid === id);
-    dispatch({ type: SET_USER, payload: { user: user.data() } });
+    try {
+      const snapshot = await getDocs(usersRef);
+      const user = snapshot.docs.find(user => user.data().uid === id);
+      dispatch({ type: SET_USER, payload: { user: user.data() } });
+    }
+    catch (error) {
+      console.log(error);
+    }
   }, [id]);
 
   const getUserBlogs = useCallback(async () => {
-    const snapshot = await getDocs(postsRef);
-    let blogs = snapshot.docs.filter(blog => blog.data().user.uid == id);
-    blogs = blogs.map(blog => {
-      return { ...blog.data(), id: blog.id }
-    });
-    dispatch({ type: SET_USERS_BLOGS, payload: { blogs } });
+    try {
+      const snapshot = await getDocs(postsRef);
+      let blogs = snapshot.docs.filter(blog => blog.data().user.uid == id);
+      blogs = blogs.map(blog => {
+        return { ...blog.data(), id: blog.id }
+      });
+      dispatch({ type: SET_USERS_BLOGS, payload: { blogs } });
+    }
+    catch (error) {
+      console.log(error);
+    }
   }, [id])
 
   useEffect(() => {
     getUser();
     getUserBlogs();
   }, [getUser, getUserBlogs])
+
+
   useEffect(() => {
     dispatch({ type: CHECK_LOCALSTORAGE_AUTH });
-
   }, [dispatch]);
+
+
   useEffect(() => {
     setComponentToDisplay(() => {
       return userComponents.find(component => component.title === activeTab);
