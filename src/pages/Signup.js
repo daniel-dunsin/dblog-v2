@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { auth, usersRef } from '../firebase-config';
 import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { addDoc} from 'firebase/firestore'
+import { addDoc } from 'firebase/firestore'
 import { connect } from 'react-redux';
-import { UPDATE_CREDENTIALS, VERIFY_PATTERNS, CLEAR_VERIFICATIONS, SIGNUP_WITH_EMAIL_AND_PASSWORD, LOGIN, SET_AUTH_USER } from '../redux/actions';
+import { UPDATE_CREDENTIALS, VERIFY_PATTERNS, CLEAR_VERIFICATIONS, SIGNUP_WITH_EMAIL_AND_PASSWORD, OPEN_MODAL, SET_AUTH_USER } from '../redux/actions';
 import { Link, useNavigate } from 'react-router-dom';
 import { FacebookButton, GoogleButton } from '../components';
 // images
@@ -52,6 +52,7 @@ function Signup({ email, password, dispatch, emailError, passwordError }) {
         navigate('/');
       } catch (error) {
         console.log(error);
+        dispatch({ type: OPEN_MODAL, payload: { modalText: error.message } })
       }
     }
   }

@@ -7,7 +7,7 @@ import { auth, database, postsRef, storage, usersRef } from '../firebase-config'
 import { v4 } from 'uuid';
 import { getDownloadURL, uploadBytes, ref } from 'firebase/storage';
 import { Navbar, Footer } from '../components';
-import { HANDLE_EDIT_USER_CHANGE, SET_EDIT_USER, ADD_EDIT_USER_IMAGE } from '../redux/actions';
+import { HANDLE_EDIT_USER_CHANGE, SET_EDIT_USER, ADD_EDIT_USER_IMAGE, OPEN_MODAL } from '../redux/actions';
 import noDp from '../assets/images/no dp.jpg';
 import { doc, getDocs, updateDoc } from 'firebase/firestore';
 import { updateProfile } from 'firebase/auth';
@@ -74,6 +74,7 @@ function EditUser({ authUser, editUser, dispatch }) {
     }
     catch (error) {
       console.log(error);
+      dispatch({ type: OPEN_MODAL, payload: { modalText: error.message } })
     }
   }
 

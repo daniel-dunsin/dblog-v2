@@ -20,3 +20,7 @@ export const SET_AUTH_USER = 'SET_AUTH_USER';
 export const HANDLE_EDIT_USER_CHANGE = 'HANDLE_EDIT_USER_CHANGE';
 export const SET_EDIT_USER = 'SET_EDIT_USER';
 export const ADD_EDIT_USER_IMAGE = 'ADD_EDIT_USER_IMAGE';
+
+// ==============MODAL=========
+export const OPEN_MODAL = 'OPEN_MODAL';
+export const CLOSE_MODAL = 'CLOSE_MODAL';

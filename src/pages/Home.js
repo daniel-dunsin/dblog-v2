@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { CHECK_LOCALSTORAGE_AUTH, GET_ALL_BLOGS } from '../redux/actions';
+import React, { useEffect, useState } from 'react';
+import { CHECK_LOCALSTORAGE_AUTH, GET_ALL_BLOGS, OPEN_MODAL } from '../redux/actions';
 import { getDocs } from 'firebase/firestore';
 import { Navbar, Footer, Blog } from '../components'
 import { connect } from 'react-redux';
@@ -20,8 +20,8 @@ function Home({ dispatch, blogs = [], isAuth }) {
   const [error, setError] = useState(false);
 
   const getBlogs = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const snapshot = await getDocs(postsRef);
       const blogs = snapshot.docs.map(doc => {
         return { ...doc.data(), id: doc.id };
@@ -35,6 +35,7 @@ function Home({ dispatch, blogs = [], isAuth }) {
       setLoading(false);
       setError(true);
       console.log(error);
+      dispatch({ type: OPEN_MODAL, payload: { modalText: 'Unable to get blogs' } })
     }
   }
 

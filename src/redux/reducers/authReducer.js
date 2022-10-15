@@ -57,12 +57,12 @@ const reducer = (state = initialState, action) => {
     }
 
     if (action.type === LOGIN) {
-        localStorage.setItem('dblogAuth', JSON.stringify({isAuth: true, uid: action.payload.user.uid}))
+        localStorage.setItem('dblogAuth', JSON.stringify({ isAuth: true, uid: action.payload.user.uid }))
 
         return { ...state, isAuth: true };
     }
     if (action.type === SIGNUP_WITH_EMAIL_AND_PASSWORD) {
-        localStorage.setItem('dblogAuth', JSON.stringify({isAuth: true, uid: action.payload.user.uid}))
+        localStorage.setItem('dblogAuth', JSON.stringify({ isAuth: true, uid: action.payload.user.uid }))
 
         return { ...state, isAuth: true };
     }
@@ -73,4 +73,4 @@ const reducer = (state = initialState, action) => {
     return state;
 };
 
-export { reducer }
+export default reducer;

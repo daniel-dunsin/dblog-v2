@@ -6,7 +6,7 @@ import AboutUser from './AboutUser';
 import UserBlogs from './UserBlogs';
 import GoogleButton from './GoogleButton';
 import FacebookButton from './FacebookButton';
-
+import Modal from './Modal';
 export {
     Blog,
     Navbar,
@@ -15,5 +15,6 @@ export {
     AboutUser,
     UserBlogs,
     GoogleButton,
-    FacebookButton
+    FacebookButton,
+    Modal,
 }

@@ -9,10 +9,11 @@ import {
     SingleBlog,
     SingleUser
 } from './pages';
-import { Navbar, Footer, ProtectedRoute } from './components'
+import { Modal, ProtectedRoute } from './components';
 
 function App() {
     return <Router>
+        <Modal />
         <Routes>
             <Route path='/' element={<Home />} />
 

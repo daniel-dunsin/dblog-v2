@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react'
 import { connect } from 'react-redux';
 import { BiDotsVerticalRounded, BiLogOut, BiPlus } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
-import { SET_AUTH_USER } from '../redux/actions';
+import { SET_AUTH_USER, OPEN_MODAL } from '../redux/actions';
 import { getDocs } from 'firebase/firestore';
 import { usersRef } from '../firebase-config';
 import logo from '../assets/images/logo.png';
@@ -13,8 +13,9 @@ import noDp from '../assets/images/no dp.jpg';
 const mapStateToProps = state => { return { isAuth: state.auth.isAuth, user: state.user.authUser } }
 
 function Navbar({ isAuth, user, dispatch }) {
-
   const [navbarOpen, setNavbarOpen] = useState(false);
+  const [error, setError] = useState(false);
+
 
   const getUser = async () => {
     if (!localStorage.getItem("dblogAuth")) return;
@@ -22,9 +23,12 @@ function Navbar({ isAuth, user, dispatch }) {
       const snapshot = await getDocs(usersRef);
       let user = snapshot.docs.find(doc => doc.data().uid === JSON.parse(localStorage.getItem("dblogAuth")).uid);
       dispatch({ type: SET_AUTH_USER, payload: { user: user.data() } });
+      setError(false);
     }
     catch (error) {
       console.log(error);
+      setError(true);
+      dispatch({ type: OPEN_MODAL, payload: { modalText: 'Network Error' } });
     }
   }
 
@@ -32,7 +36,7 @@ function Navbar({ isAuth, user, dispatch }) {
     getUser();
   }, [])
 
-  return <nav className='w-full shadow-md'>
+  return !error && <nav className='w-full shadow-md'>
     <div className='max-w-[1200px] mx-auto p-6 flex justify-between items-center'>
       <Link to='/' className='flex-[0.6]'>
         <img src={logo} alt="logo" className='w-[150px]' />
@@ -69,7 +73,7 @@ function Navbar({ isAuth, user, dispatch }) {
             <Link to={`/user/${user.uid}`}>
               <img src={
                 user.photoURL ? user.photoURL : noDp
-              } className='w-[50px] h-[50px] rounded-full cursor-pointer border-2 transition hover:border-blue-700' alt="" />
+              } className='w-[50px] h-[50px] rounded-full cursor-pointer border-2 transition hover:border-blue-700 object-center object-cover' alt="" />
             </Link>
 
           </div>

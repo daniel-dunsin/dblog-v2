@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { auth, } from '../firebase-config';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { connect } from 'react-redux';
-import { UPDATE_CREDENTIALS, VERIFY_PATTERNS, CLEAR_VERIFICATIONS, LOGIN } from '../redux/actions';
+import { UPDATE_CREDENTIALS, VERIFY_PATTERNS, CLEAR_VERIFICATIONS, LOGIN, OPEN_MODAL } from '../redux/actions';
 import { GoogleButton, FacebookButton } from '../components';
 import { Link, useNavigate } from 'react-router-dom';
 import image from '../assets/images/login.jpeg';
@@ -35,6 +35,7 @@ function Login({ email, password, dispatch, emailError, passwordError }) {
                 })
                 .catch(error => {
                     console.log(error.message)
+                    dispatch({ type: OPEN_MODAL, payload: { modalText: error.message } })
                 });
         }
     }

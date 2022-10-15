@@ -43,10 +43,10 @@ const reducer = (state = initialState, action) => {
     if (action.type === GET_ALL_BLOGS) {
         return { ...state, allBlogs: action.payload.blogs }
     }
-    if(action.type === SET_USERS_BLOGS){
-        return {...state, userBlogs: action.payload.blogs}
+    if (action.type === SET_USERS_BLOGS) {
+        return { ...state, userBlogs: action.payload.blogs }
     }
     return state;
 };
 
-export { reducer }
+export default reducer;

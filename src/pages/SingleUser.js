@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { database, postsRef, usersRef } from '../firebase-config';
 import { getDocs } from 'firebase/firestore';
 import { Navbar, Footer, UserBlogs } from '../components';
-import { CHECK_LOCALSTORAGE_AUTH, SET_USER, SET_USERS_BLOGS } from '../redux/actions';
+import { CHECK_LOCALSTORAGE_AUTH, SET_USER, SET_USERS_BLOGS, OPEN_MODAL } from '../redux/actions';
 import AboutUser from '../components/AboutUser';
 import noDp from '../assets/images/no dp.jpg';
 
@@ -47,6 +47,7 @@ function SingleUser({ dispatch, user, authUser, userBlogs }) {
     }
     catch (error) {
       console.log(error);
+      dispatch({ type: OPEN_MODAL, payload: { modalText: error.message } })
     }
   }, [id]);
 
@@ -61,6 +62,7 @@ function SingleUser({ dispatch, user, authUser, userBlogs }) {
     }
     catch (error) {
       console.log(error);
+      dispatch({ type: OPEN_MODAL, payload: { modalText: error.message } })
     }
   }, [id])
 

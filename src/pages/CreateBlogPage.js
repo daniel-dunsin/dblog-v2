@@ -6,10 +6,8 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { v4 } from 'uuid';
-import { ADD_POST, CLEAR_BLOG_DETAILS, UPDATE_BLOG_CREDENTIALS, UPLOAD_IMAGE } from '../redux/actions';
+import { CLEAR_BLOG_DETAILS, UPDATE_BLOG_CREDENTIALS, UPLOAD_IMAGE, OPEN_MODAL } from '../redux/actions';
 import { FaPlus, FaPlusCircle } from 'react-icons/fa';
-
-// comments, title, img, tags, body, likes
 
 
 const mapStateToProps = state => {
@@ -40,6 +38,7 @@ function CreateBlogPage({ title, image, body, tagsText, convertedTagsList, dispa
       navigate('/')
     } catch (error) {
       console.log(error);
+      dispatch({ type: OPEN_MODAL, payload: { modalText: error } })
     }
 
   }
@@ -56,6 +55,7 @@ function CreateBlogPage({ title, image, body, tagsText, convertedTagsList, dispa
     }
     catch (error) {
       console.log(error);
+      dispatch({ type: OPEN_MODAL, payload: { modalText: error } })
     }
   }
   useEffect(() => {

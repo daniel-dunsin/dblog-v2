@@ -4,18 +4,21 @@ import { addDoc, getDocs } from 'firebase/firestore';
 import { auth, facebookProvider, usersRef } from '../firebase-config';
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { LOGIN } from '../redux/actions';
+import { LOGIN, OPEN_MODAL } from '../redux/actions';
 import facebook from '../assets/images/facebook.png';
 
 const mapDispatchToProps = dispatch => {
     return {
         login: (user) => {
             dispatch({ type: LOGIN, payload: { user } })
+        },
+        showError: (modalText) => {
+            dispatch({ type: OPEN_MODAL, payload: { modalText } })
         }
     }
 }
 
-const FacebookButton = ({ login }) => {
+const FacebookButton = ({ login, showError }) => {
 
     const navigate = useNavigate();
 
@@ -46,6 +49,7 @@ const FacebookButton = ({ login }) => {
         }
         catch (error) {
             console.log(error);
+            showError(error.message);
         }
     }
 

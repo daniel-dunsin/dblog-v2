@@ -4,18 +4,21 @@ import { addDoc, getDocs } from 'firebase/firestore';
 import { auth, googleProvider, usersRef } from '../firebase-config';
 import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { LOGIN } from '../redux/actions';
+import { LOGIN, OPEN_MODAL } from '../redux/actions';
 import google from '../assets/images/google.png';
 
 const mapDispatchToProps = dispatch => {
     return {
         login: (user) => {
             dispatch({ type: LOGIN, payload: { user } })
+        },
+        showError: (modalText) => {
+            dispatch({ type: OPEN_MODAL, payload: { modalText } })
         }
     }
 }
 
-const GoogleButton = ({ login }) => {
+const GoogleButton = ({ login, showError }) => {
     const navigate = useNavigate();
     const googleSignIn = async () => {
         try {
@@ -43,6 +46,7 @@ const GoogleButton = ({ login }) => {
         }
         catch (error) {
             console.log(error);
+            showError(error.message)
         }
     }
 
