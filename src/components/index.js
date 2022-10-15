@@ -7,6 +7,7 @@ import UserBlogs from './UserBlogs';
 import GoogleButton from './GoogleButton';
 import FacebookButton from './FacebookButton';
 import Modal from './Modal';
+import Preloader from './Preloader';
 export {
     Blog,
     Navbar,
@@ -17,4 +18,5 @@ export {
     GoogleButton,
     FacebookButton,
     Modal,
+    Preloader
 }

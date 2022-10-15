@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { CHECK_LOCALSTORAGE_AUTH, GET_ALL_BLOGS, OPEN_MODAL } from '../redux/actions';
+import { CHECK_LOCALSTORAGE_AUTH, GET_ALL_BLOGS, OPEN_MODAL, START_LOADING, STOP_LOADING } from '../redux/actions';
 import { getDocs } from 'firebase/firestore';
-import { Navbar, Footer, Blog } from '../components'
+import { Navbar, Footer, Blog, Preloader } from '../components'
 import { connect } from 'react-redux';
 import logo from '../assets/images/logo.png'
 import { postsRef } from '../firebase-config';
@@ -10,29 +10,29 @@ import { FaSpinner } from 'react-icons/fa';
 const mapStateToProps = state => {
   return {
     isAuth: state.auth.isAuth,
-    blogs: state.blog.allBlogs
+    blogs: state.blog.allBlogs,
+    loading: state.fetch.loading
   }
 }
 
-function Home({ dispatch, blogs = [], isAuth }) {
+function Home({ dispatch, blogs = [], loading }) {
 
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false);
 
   const getBlogs = async () => {
-    setLoading(true);
+    dispatch({ type: START_LOADING })
     try {
       const snapshot = await getDocs(postsRef);
       const blogs = snapshot.docs.map(doc => {
         return { ...doc.data(), id: doc.id };
       });
-      setLoading(false);
+      dispatch({ type: STOP_LOADING })
       setError(false);
       dispatch({
         type: GET_ALL_BLOGS, payload: { blogs }
       });
     } catch (error) {
-      setLoading(false);
+      dispatch({ type: STOP_LOADING })
       setError(true);
       console.log(error);
       dispatch({ type: OPEN_MODAL, payload: { modalText: 'Unable to get blogs' } })
@@ -47,9 +47,8 @@ function Home({ dispatch, blogs = [], isAuth }) {
 
   if (loading) {
     return <>
-      <section className='bg-gray-100 min-h-[600px] py-9 px-6 flex justify-center items-center'>
-        <i className='text-[30px] text-blue-700 animate-spin'><FaSpinner /></i>
-      </section>
+      <Navbar />
+      <Preloader />
       <Footer />
     </>
 
@@ -59,6 +58,16 @@ function Home({ dispatch, blogs = [], isAuth }) {
     return <>
       <section className='bg-gray-100 min-h-[600px] py-9 px-6 flex justify-center items-center'>
         <h1 className='text-[40px]'>Unable to fetch blogs</h1>
+      </section>
+      <Footer />
+    </>
+  }
+
+  if (blogs.length === 0) {
+    return <>
+      <Navbar />
+      <section className='bg-gray-100 min-h-[600px] py-9 px-6 flex justify-center items-center'>
+        <h1 className='text-[40px]'>No blog to display</h1>
       </section>
       <Footer />
     </>

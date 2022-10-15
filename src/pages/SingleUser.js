@@ -3,8 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import { connect } from 'react-redux'
 import { database, postsRef, usersRef } from '../firebase-config';
 import { getDocs } from 'firebase/firestore';
-import { Navbar, Footer, UserBlogs } from '../components';
-import { CHECK_LOCALSTORAGE_AUTH, SET_USER, SET_USERS_BLOGS, OPEN_MODAL } from '../redux/actions';
+import { Navbar, Footer, UserBlogs, Preloader } from '../components';
+import { CHECK_LOCALSTORAGE_AUTH, SET_USER, SET_USERS_BLOGS, OPEN_MODAL, START_LOADING, STOP_LOADING } from '../redux/actions';
 import AboutUser from '../components/AboutUser';
 import noDp from '../assets/images/no dp.jpg';
 
@@ -26,10 +26,11 @@ const mapStateToProps = state => {
   return {
     user: state.user.userData,
     authUser: state.user.authUser,
-    userBlogs: state.blog.userBlogs
+    userBlogs: state.blog.userBlogs,
+    loading: state.fetch.loading,
   }
 }
-function SingleUser({ dispatch, user, authUser, userBlogs }) {
+function SingleUser({ dispatch, user, authUser, loading }) {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState('Stories');
   const [componentToDisplay, setComponentToDisplay] = useState({
@@ -40,14 +41,17 @@ function SingleUser({ dispatch, user, authUser, userBlogs }) {
 
 
   const getUser = useCallback(async () => {
+    dispatch({ type: START_LOADING })
     try {
       const snapshot = await getDocs(usersRef);
       const user = snapshot.docs.find(user => user.data().uid === id);
       dispatch({ type: SET_USER, payload: { user: user.data() } });
+      dispatch({ type: STOP_LOADING })
     }
     catch (error) {
       console.log(error);
       dispatch({ type: OPEN_MODAL, payload: { modalText: error.message } })
+      dispatch({ type: STOP_LOADING })
     }
   }, [id]);
 
@@ -82,6 +86,15 @@ function SingleUser({ dispatch, user, authUser, userBlogs }) {
       return userComponents.find(component => component.title === activeTab);
     })
   }, [activeTab])
+
+  if (loading) {
+    return <>
+      <Navbar />
+      <Preloader />
+      <Footer />
+    </>
+  }
+
 
   return <>
     <Navbar />

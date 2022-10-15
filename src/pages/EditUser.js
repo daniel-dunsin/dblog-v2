@@ -6,34 +6,43 @@ import { useState } from 'react';
 import { auth, database, postsRef, storage, usersRef } from '../firebase-config';
 import { v4 } from 'uuid';
 import { getDownloadURL, uploadBytes, ref } from 'firebase/storage';
-import { Navbar, Footer } from '../components';
-import { HANDLE_EDIT_USER_CHANGE, SET_EDIT_USER, ADD_EDIT_USER_IMAGE, OPEN_MODAL } from '../redux/actions';
+import { Navbar, Footer, Preloader } from '../components';
+import { HANDLE_EDIT_USER_CHANGE, SET_EDIT_USER, ADD_EDIT_USER_IMAGE, OPEN_MODAL, START_LOADING, STOP_LOADING } from '../redux/actions';
 import noDp from '../assets/images/no dp.jpg';
 import { doc, getDocs, updateDoc } from 'firebase/firestore';
 import { updateProfile } from 'firebase/auth';
+
+
 const mapStateToProps = state => {
   return {
     authUser: state.user.authUser,
-    editUser: state.user.editUser
+    editUser: state.user.editUser,
+    loading: state.fetch.loading,
   }
 }
 
-function EditUser({ authUser, editUser, dispatch }) {
+function EditUser({ authUser, editUser, loading, dispatch }) {
   const [displayImage, setDisplayImage] = useState(editUser.photoURL ? editUser.photoURL : authUser.photoURL);
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
 
   const uploadImage = async (e) => {
-    setLoading(true);
-    const imageUploaded = e.target.files[0];
-    const imageRef = ref(storage, `${imageUploaded.name + v4()}`);
-    await uploadBytes(imageRef, imageUploaded);
-    const photoURL = await getDownloadURL(imageRef);
-    console.log(photoURL);
-    setDisplayImage(photoURL);
-    dispatch({ type: ADD_EDIT_USER_IMAGE, payload: { photoURL } });
-    setLoading(false);
+    dispatch({ type: START_LOADING })
+    try {
+      const imageUploaded = e.target.files[0];
+      const imageRef = ref(storage, `${imageUploaded.name + v4()}`);
+      await uploadBytes(imageRef, imageUploaded);
+      const photoURL = await getDownloadURL(imageRef);
+      console.log(photoURL);
+      setDisplayImage(photoURL);
+      dispatch({ type: ADD_EDIT_USER_IMAGE, payload: { photoURL } });
+      dispatch({ type: STOP_LOADING })
+    }
+    catch (error) {
+      console.log(error);
+      dispatch({ type: OPEN_MODAL, payload: { modalText: error.message } });
+      dispatch({ type: STOP_LOADING })
+    }
   }
   //  get the user, set some of his values into the states
   const handleChange = (event) => {
@@ -42,13 +51,13 @@ function EditUser({ authUser, editUser, dispatch }) {
   };
 
   const handleSubmit = async (event) => {
+    event.preventDefault();
+    dispatch({ type: START_LOADING })
     try {
-      setLoading(true);
-      event.preventDefault();
       const usersSnapshot = await getDocs(usersRef);
       const user = usersSnapshot.docs.find((user) => user.data().uid === authUser.uid);
       const userRef = doc(database, 'users', user.id);
-      const cred = await updateProfile(auth.currentUser, {
+      await updateProfile(auth.currentUser, {
         photoURL: editUser.photoURL,
         displayName: editUser.displayName,
         email: editUser.email,
@@ -69,12 +78,13 @@ function EditUser({ authUser, editUser, dispatch }) {
           }
         })
       });
-      setLoading(false);
+      dispatch({ type: STOP_LOADING })
       navigate('/');
     }
     catch (error) {
       console.log(error);
-      dispatch({ type: OPEN_MODAL, payload: { modalText: error.message } })
+      dispatch({ type: OPEN_MODAL, payload: { modalText: error.message } });
+      dispatch({ type: STOP_LOADING })
     }
   }
 
@@ -86,11 +96,7 @@ function EditUser({ authUser, editUser, dispatch }) {
     <Navbar />
     <section className='bg-gray-100 min-h-screen py-9 px-6'>
       {/* preloader */}
-      {loading && <section className="fixed top-0 left-0 w-full bg-[rgba(255,255,255,0.6)] min-h-screen flex justify-center items-center">
-        <i className='text-[30px] text-blue-600 font-bold animate-spin'>
-          <FaSpinner />
-        </i>
-      </section>}
+      {loading && <Preloader />}
 
       <div className='w-full max-w-[1200px] mx-auto'>
         <form className='w-[90vw] max-w-[900px] bg-white rounded-md shadow-lg mx-auto' onSubmit={handleSubmit}>

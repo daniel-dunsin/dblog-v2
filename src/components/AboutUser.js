@@ -9,7 +9,6 @@ const mapStateToProps = state => {
 }
 
 const AboutUser = ({ user }) => {
-  console.log(user)
   return (
     <div className='flex flex-col gap-y-2'>
       <div className='flex flex-row gap-x-2'>
@@ -41,7 +40,7 @@ const AboutUser = ({ user }) => {
           Portfolio URL :
         </p>
         {
-          user.portfolio ? <a href={user.portfolio}>{user.portfolio}</a> : <p>Not Added</p>
+          user.portfolio ? <a className='underline' href={user.portfolio}>{user.portfolio}</a> : <p>Not Added</p>
         }
       </div>
       <div className='flex flex-row gap-x-2'>
@@ -49,7 +48,7 @@ const AboutUser = ({ user }) => {
           Linkedin :
         </p>
         {
-          user.linkedin ? <a href={user.linkedin}>{user.linkedin}</a> : <p>Not Added</p>
+          user.linkedin ? <a className='underline' href={user.linkedin}>{user.linkedin}</a> : <p>Not Added</p>
         }
       </div>
 
@@ -58,7 +57,16 @@ const AboutUser = ({ user }) => {
           Twiiter :
         </p>
         {
-          user.twitter ? <a href={user.twitter}>{user.twitter}</a> : <p>Not Added</p>
+          user.twitter ? <a className='underline' href={user.twitter}>{user.twitter}</a> : <p>Not Added</p>
+        }
+      </div>
+
+      <div className='flex flex-row gap-x-2'>
+        <p className='font-bold'>
+          Github :
+        </p>
+        {
+          user.github ? <a className='underline' href={user.github}>{user.github}</a> : <p>Not Added</p>
         }
       </div>
 

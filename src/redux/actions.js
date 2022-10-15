@@ -24,3 +24,8 @@ export const ADD_EDIT_USER_IMAGE = 'ADD_EDIT_USER_IMAGE';
 // ==============MODAL=========
 export const OPEN_MODAL = 'OPEN_MODAL';
 export const CLOSE_MODAL = 'CLOSE_MODAL';
+
+// ==============FETCH=========
+export const START_LOADING = 'START_LOADING';
+export const STOP_LOADING = 'STOP_LOADING';
+
