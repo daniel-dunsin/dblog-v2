@@ -33,7 +33,6 @@ function EditUser({ authUser, editUser, loading, dispatch }) {
       const imageRef = ref(storage, `${imageUploaded.name + v4()}`);
       await uploadBytes(imageRef, imageUploaded);
       const photoURL = await getDownloadURL(imageRef);
-      console.log(photoURL);
       setDisplayImage(photoURL);
       dispatch({ type: ADD_EDIT_USER_IMAGE, payload: { photoURL } });
       dispatch({ type: STOP_LOADING })
