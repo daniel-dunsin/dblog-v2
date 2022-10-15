@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { connect } from 'react-redux';
 import { BiDotsVerticalRounded, BiLogOut, BiPlus } from 'react-icons/bi';
-import { Link } from 'react-router-dom';
-import { SET_AUTH_USER, OPEN_MODAL } from '../redux/actions';
+import { Link, useNavigate } from 'react-router-dom';
+import { SET_AUTH_USER, OPEN_MODAL, START_LOADING, STOP_LOADING } from '../redux/actions';
 import { getDocs } from 'firebase/firestore';
-import { usersRef } from '../firebase-config';
+import { signOut } from 'firebase/auth';
+import { auth, usersRef } from '../firebase-config';
 import logo from '../assets/images/logo.png';
 import noDp from '../assets/images/no dp.jpg';
 
@@ -16,6 +17,7 @@ function Navbar({ isAuth, user, dispatch }) {
   const [navbarOpen, setNavbarOpen] = useState(false);
   const [error, setError] = useState(false);
 
+  const navigate = useNavigate();
 
   const getUser = async () => {
     if (!localStorage.getItem("dblogAuth")) return;
@@ -28,6 +30,22 @@ function Navbar({ isAuth, user, dispatch }) {
     catch (error) {
       console.log(error);
       setError(true);
+      dispatch({ type: OPEN_MODAL, payload: { modalText: 'Network Error' } });
+    }
+  }
+
+
+  const logout = async () => {
+    dispatch({ type: START_LOADING })
+    try {
+      await signOut(auth);
+      dispatch({ type: STOP_LOADING })
+      localStorage.removeItem("dblogAuth");
+      navigate('/login');
+    }
+    catch (error) {
+      console.log(error);
+      dispatch({ type: STOP_LOADING })
       dispatch({ type: OPEN_MODAL, payload: { modalText: 'Network Error' } });
     }
   }
@@ -45,7 +63,7 @@ function Navbar({ isAuth, user, dispatch }) {
         {isAuth
           // larger screens
           ? <div className='flex justify-center items-center gap-x-3'>
-            <button className='items-center gap-x-2 bg-transparent text-blue-800 hover:bg-blue-800 border-2 border-blue-800 hover:text-white py-2 px-3 rounded-md md:flex hidden'>Sign Out <i><BiLogOut /></i></button>
+            <button className='items-center gap-x-2 bg-transparent text-blue-800 hover:bg-blue-800 border-2 border-blue-800 hover:text-white py-2 px-3 rounded-md md:flex hidden' onClick={logout}>Sign Out <i><BiLogOut /></i></button>
 
 
             <Link to='/blog/create'>
@@ -63,7 +81,7 @@ function Navbar({ isAuth, user, dispatch }) {
                   <i><BiPlus /></i>
                   <Link to='/blog/create'>Create Post</Link>
                 </span>
-                <span className='cursor-pointer hover:text-blue-600 flex flex-row gap-3 font-bold items-center'>
+                <span className='cursor-pointer hover:text-blue-600 flex flex-row gap-3 font-bold items-center' onClick={logout}>
                   <i><BiLogOut /></i>
                   <p>Log Out</p>
                 </span>
@@ -79,7 +97,7 @@ function Navbar({ isAuth, user, dispatch }) {
           </div>
           : <div className='flex items-center justify-center gap-x-3'>
             <Link to='/login'>
-              <button className=' bg-blue-700 text-white py-2 px-3 rounded-md'>LOGIN</button>
+              <button className=' bg-blue-700 border-2 border-blue-700 text-white py-2 px-3 rounded-md'>LOGIN</button>
             </Link>
             <Link to='/signup'>
               <button className='text-blue-700 hover:text-white bg-transparent border border-blue-700 hover:bg-blue-700 transition py-2 px-3 rounded-md'>SIGN UP</button>

@@ -13,6 +13,7 @@ export const UPDATE_BLOG_CREDENTIALS = 'UPDATE_BLOG_CREDENTIALS';
 export const UPLOAD_IMAGE = 'UPLOAD_IMAGE';
 export const GET_ALL_BLOGS = 'GET_ALL_BLOGS';
 export const SET_USERS_BLOGS = 'SET_USERS_BLOGS';
+export const SET_SINGLE_BLOG = 'SET_SINGLE_BLOG';
 
 // ===============USER=========
 export const SET_USER = 'SET_USER';

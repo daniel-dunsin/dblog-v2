@@ -9,8 +9,6 @@ import noDp from '../assets/images/no dp.jpg';
 
 
 function Blog({ id, image, tags, title, user, body }) {
-
-
   return (
     <article className='w-full p-3 border bg-white hover:shadow-lg shadow-md rounded-md'>
       <img src={image ? image : noImage} className="w-full h-[200px] object-center object-cover rounded-md" alt="" />
@@ -30,7 +28,7 @@ function Blog({ id, image, tags, title, user, body }) {
         <h2 className='uppercase text-[20px] font-semibold'>{title}</h2>
         <p className='text-[15px]'> {body.slice(0, 200)} </p>
         <p className='text-decoration-underline hover:text-blue-700 cursor-pointer flex flex-row items-center text-[14px] gap-x-2'>
-          <span>Read More</span>
+          <Link to={`/blog/${id}`}>Read More</Link>
           <i>
             < FaArrowRight />
           </i>

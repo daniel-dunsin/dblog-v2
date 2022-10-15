@@ -1,4 +1,4 @@
-import { CLEAR_BLOG_DETAILS, UPDATE_BLOG_CREDENTIALS, UPLOAD_IMAGE, GET_ALL_BLOGS, SET_USERS_BLOGS } from "../actions";
+import { CLEAR_BLOG_DETAILS, UPDATE_BLOG_CREDENTIALS, UPLOAD_IMAGE, GET_ALL_BLOGS, SET_USERS_BLOGS, SET_SINGLE_BLOG } from "../actions";
 const initialState = {
     uploads: {
         title: '',
@@ -8,7 +8,20 @@ const initialState = {
         convertedTagsList: [],
     },
     allBlogs: [],
-    userBlogs: []
+    userBlogs: [],
+    singleBlog: {
+        body: '',
+        title: '',
+        image: '',
+        tags: '',
+        createdOn: '',
+        user: {
+            email: '',
+            image: '',
+            uid: '',
+            username: '',
+        }
+    }
 };
 
 const reducer = (state = initialState, action) => {
@@ -46,7 +59,11 @@ const reducer = (state = initialState, action) => {
     if (action.type === SET_USERS_BLOGS) {
         return { ...state, userBlogs: action.payload.blogs }
     }
+    if (action.type === SET_SINGLE_BLOG) {
+        return { ...state, singleBlog: action.payload.blog }
+    }
+
     return state;
-};
+}
 
 export default reducer;
