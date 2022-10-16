@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { deleteDoc, doc, getDoc } from 'firebase/firestore';
-import { database } from '../firebase-config';
+import { auth, database } from '../firebase-config';
 import { OPEN_MODAL, SET_SINGLE_BLOG, START_LOADING, STOP_LOADING } from '../redux/actions';
 import { Navbar, Footer, Preloader } from '../components';
 import { FaChevronDown, FaTrashAlt } from 'react-icons/fa';
@@ -10,11 +10,12 @@ import noDp from '../assets/images/no dp.jpg'
 const mapStateToProps = state => {
   return {
     loading: state.fetch.loading,
+    authUser: state.user.authUser,
     blog: state.blog.singleBlog,
   }
 }
 
-function SingleBlog({ loading, blog, dispatch }) {
+function SingleBlog({ loading, blog, authUser, dispatch }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const getBlog = async () => {
@@ -90,9 +91,9 @@ function SingleBlog({ loading, blog, dispatch }) {
             </div>
           </div>
 
-          <div className='flex flex-row justify-between w-full items-center mt-6'>
+          <div className={`flex flex-row ${blog.user.uid === authUser.uid && 'justify-between'} w-full items-center mt-6`}>
             <h4 className='text-[18px] md:font-bold capitalize'>{blog.createdOn}</h4>
-            <i className='text-[20px] text-red-600 hover:text-red-800 transition cursor-pointer' onClick={deleteBlog}><FaTrashAlt /></i>
+            {blog.user.uid === authUser.uid && <i className='text-[20px] text-red-600 hover:text-red-800 transition cursor-pointer' onClick={deleteBlog}><FaTrashAlt /></i>}
           </div>
 
           <div className='mt-6'>

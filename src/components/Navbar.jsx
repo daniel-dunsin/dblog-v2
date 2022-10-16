@@ -76,7 +76,7 @@ function Navbar({ isAuth, user, dispatch }) {
               <i className='text-[30px]' onClick={() => setNavbarOpen(prev => !prev)}>
                 <BiDotsVerticalRounded />
               </i>
-              {navbarOpen && <div className='bg-white p-4 shadow-md absolute top-[120%] right-[20%] w-[150px] flex flex-col gap-y-4'>
+              {navbarOpen && <div className='bg-white p-4 shadow-md z-20 absolute top-[120%] right-[20%] w-[150px] flex flex-col gap-y-4'>
                 <span className='cursor-pointer hover:text-blue-600 flex flex-row gap-3 font-bold items-center'>
                   <i><BiPlus /></i>
                   <Link to='/blog/create'>Create Post</Link>
