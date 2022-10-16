@@ -1,9 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { auth, database } from '../firebase-config';
-import { doc, updateDoc } from 'firebase/firestore';
-import { BiPurchaseTagAlt, BiComment, BiHeart } from 'react-icons/bi';
-import { FaArrowRight, FaHeart } from 'react-icons/fa';
+import { BiPurchaseTagAlt } from 'react-icons/bi';
+import { FaArrowRight } from 'react-icons/fa';
 import noImage from '../assets/images/no image.jpg';
 import noDp from '../assets/images/no dp.jpg';
 

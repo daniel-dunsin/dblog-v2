@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { FaCheckCircle, FaPlus, FaSpinner } from 'react-icons/fa';
+import { FaCheckCircle, FaPlus } from 'react-icons/fa';
 import { useState } from 'react';
 import { auth, database, postsRef, storage, usersRef } from '../firebase-config';
 import { v4 } from 'uuid';

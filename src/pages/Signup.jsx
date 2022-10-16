@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { auth, usersRef } from '../firebase-config';
-import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { addDoc } from 'firebase/firestore'
 import { connect } from 'react-redux';
 import { UPDATE_CREDENTIALS, VERIFY_PATTERNS, CLEAR_VERIFICATIONS, SIGNUP_WITH_EMAIL_AND_PASSWORD, OPEN_MODAL, SET_AUTH_USER, STOP_LOADING, START_LOADING } from '../redux/actions';
@@ -13,7 +13,6 @@ import logo from '../assets/images/logo.png';
 
 const mapStateToProps = (state) => {
   return {
-    isAuth: state.auth.isAuth,
     email: state.auth.credentials.email,
     password: state.auth.credentials.password,
     emailError: state.auth.errors.email,

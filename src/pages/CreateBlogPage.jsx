@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Navbar, Footer, Preloader } from '../components';
 import { addDoc } from 'firebase/firestore';
 import { postsRef, auth, storage } from '../firebase-config';

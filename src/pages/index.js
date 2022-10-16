@@ -1,5 +1,4 @@
 import CreateBlogPage from './CreateBlogPage';
-import EditBlog from './EditBlog';
 import EditUser from './EditUser';
 import Home from './Home';
 import SingleBlog from './SingleBlog';
@@ -10,7 +9,6 @@ import Signup from './Signup';
 
 export {
     CreateBlogPage,
-    EditBlog,
     EditUser,
     Home,
     SingleBlog,

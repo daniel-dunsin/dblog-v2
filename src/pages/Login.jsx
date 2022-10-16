@@ -13,7 +13,6 @@ import logo from '../assets/images/logo.png';
 
 const mapStateToProps = (state) => {
     return {
-        isAuth: state.auth.isAuth,
         email: state.auth.credentials.email,
         password: state.auth.credentials.password,
         emailError: state.auth.errors.email,

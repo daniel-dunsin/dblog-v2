@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import {
     CreateBlogPage,
-    EditBlog,
     EditUser,
     Home,
     Login,
@@ -24,12 +23,6 @@ function App() {
             <Route path='/blog/create' element={
                 <ProtectedRoute>
                     <CreateBlogPage />
-                </ProtectedRoute>
-            } />
-
-            <Route path='/blog/edit' element={
-                <ProtectedRoute>
-                    <EditBlog />
                 </ProtectedRoute>
             } />
 

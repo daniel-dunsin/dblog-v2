@@ -5,7 +5,6 @@ import { Navbar, Footer, Blog, Preloader } from '../components'
 import { connect } from 'react-redux';
 import logo from '../assets/images/logo.png'
 import { postsRef } from '../firebase-config';
-import { FaSpinner } from 'react-icons/fa';
 
 const mapStateToProps = state => {
   return {
